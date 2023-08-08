@@ -17,11 +17,14 @@ public class ScheduleDownloader  {
 
             System.out.println(requestBody);
 
+            //URL url = new URL("https://jsonplaceholder.typicode.com/albums");
             URL url = new URL("https://mpo.krakow.pl/pl/harmonogram");
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod("GET");
             conn.setDoOutput(true);
+            conn.setDoInput(true);
             conn.setRequestProperty("Content-Type", "application/json");
+
 
             try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
                 dos.writeBytes(requestBody);
@@ -56,7 +59,7 @@ public class ScheduleDownloader  {
 
             conn.disconnect();
 
-            EmailSender emailSender = new EmailSender();
+            //EmailSender emailSender = new EmailSender();
         }
         catch (IOException e)
         {
