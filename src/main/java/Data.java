@@ -1,28 +1,28 @@
 
 public class Data {
 
-    String ulica;
-    String numer;
+    String street;
+    String number;
 
-    public Data(String ulica, String numer) {
-        this.ulica = ulica;
-        this.numer = numer;
+    public Data(String street, String number) {
+        this.street = street;
+        this.number = number;
     }
 
-    public String getUlica() {
-        return ulica;
+    public String getStreet() {
+        return street;
     }
 
-    public void setUlica(String ulica) {
-        this.ulica = ulica;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
-    public String getNumer() {
-        return numer;
+    public String getNumber() {
+        return number;
     }
 
-    public void setNumer(String numer) {
-        this.numer = numer;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
 }
