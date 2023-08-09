@@ -1,11 +1,14 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.HttpResponse;
 
 public class ScheduleDownloader  {
 
@@ -15,50 +18,45 @@ public class ScheduleDownloader  {
             ObjectMapper objectMapper = new ObjectMapper();
             String requestBody = objectMapper.writeValueAsString(data);
 
-            System.out.println(requestBody);
+            var ulica = 56968; // Ustaw wartość odpowiednią dla Twojego przypadku
+            var numer = 703346; // Ustaw wartość odpowiednią dla Twojego przypadku
+            var token = "OkkxhC6b9etJBAq7WTHJ0LhIglO18sip";
 
-            //URL url = new URL("https://jsonplaceholder.typicode.com/albums");
-            URL url = new URL("https://mpo.krakow.pl/pl/harmonogram");
-            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            //System.out.println(requestBody);
+            URL url = new URL("https://kiedywywoz.pl/API/harmo_img/");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.setRequestProperty("Content-Type", "multipart/form-data");
 
+            String boundary = "boundary";
+            String CRLF = "\r\n";
 
-            try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
-                dos.writeBytes(requestBody);
+            try (DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream())) {
+
+                outputStream.writeBytes("Content-Disposition: form-data; ulica=\"" + ulica + "\"; numer=\"" + numer + "\"; token=\"" + token + "\""  + CRLF);
             }
 
             int responseCode = conn.getResponseCode();
             System.out.println("Response code: " + responseCode);
 
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                InputStream inputStream = conn.getInputStream();
 
-        /*if (responseCode == HttpsURLConnection.HTTP_OK) {
-            InputStream inputStream = conn.getInputStream();
-            FileOutputStream outputStream = new FileOutputStream("output.png");
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-            outputStream.close();
-            inputStream.close();
-            System.out.println("Plik PNG został pobrany i zapisany jako 'output.png'");
-        } else {
-            System.out.println("Wystąpił błąd podczas pobierania pliku PNG.");
-        }*/
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
 
-
-            try (BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                String line;
-                while ((line = bf.readLine()) != null) {
-                    System.out.println(line);
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
                 }
-            }
+                in.close();
 
+                // print result
+                System.out.println(response.toString());
+        }
             conn.disconnect();
-
             //EmailSender emailSender = new EmailSender();
         }
         catch (IOException e)
