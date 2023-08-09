@@ -4,6 +4,8 @@ public class Data {
     String street;
     String number;
 
+    public Data(){}
+
     public Data(String street, String number) {
         this.street = street;
         this.number = number;
