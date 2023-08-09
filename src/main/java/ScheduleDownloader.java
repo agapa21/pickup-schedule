@@ -1,19 +1,17 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
 
 public class ScheduleDownloader  {
 
     ScheduleDownloader(Data data) {
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String requestBody = objectMapper.writeValueAsString(data);
-
-            var ulica = 56968;
-            var numer = 703346;
+            var ulica = "56968";
+            var numer = "703346";
             var token = "OkkxhC6b9etJBAq7WTHJ0LhIglO18sip";
 
             //System.out.println(requestBody);
@@ -22,15 +20,23 @@ public class ScheduleDownloader  {
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.setRequestProperty("Content-Type", "multipart/form-data");
 
-            String boundary = "boundary";
-            String CRLF = "\r\n";
+            String LINE_FEED = "\r\n";
+            String SEPARATOR = "--";
+            String BOUNDARY = "------Boundary" + new BigInteger(128, new SecureRandom()).toString(32);
 
-            try (DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream())) {
+            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
 
-                outputStream.writeBytes("Content-Disposition: form-data; ulica=\"" + ulica + "\"; numer=\"" + numer + "\"; token=\"" + token + "\""  + CRLF);
-            }
+            DataOutputStream dataOut = new DataOutputStream(conn.getOutputStream());
+
+            dataOut.writeBytes("Content-Disposition: form-data; name=\"options\"" + LINE_FEED);
+            dataOut.writeBytes(LINE_FEED);
+            dataOut.writeBytes(
+                    "{ \"ulica\" : \"" + ulica + "\", \"numer\" : \"" + numer + "\", \"token\" : \"" + token + "\" }");
+            dataOut.writeBytes(LINE_FEED);
+            dataOut.writeBytes(SEPARATOR + BOUNDARY + LINE_FEED);
+            dataOut.flush();
+            dataOut.close();
 
             int responseCode = conn.getResponseCode();
             System.out.println("Response code: " + responseCode);
