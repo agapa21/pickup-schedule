@@ -1,14 +1,8 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.http.HttpResponse;
 
 public class ScheduleDownloader  {
 
@@ -18,8 +12,8 @@ public class ScheduleDownloader  {
             ObjectMapper objectMapper = new ObjectMapper();
             String requestBody = objectMapper.writeValueAsString(data);
 
-            var ulica = 56968; // Ustaw wartość odpowiednią dla Twojego przypadku
-            var numer = 703346; // Ustaw wartość odpowiednią dla Twojego przypadku
+            var ulica = 56968;
+            var numer = 703346;
             var token = "OkkxhC6b9etJBAq7WTHJ0LhIglO18sip";
 
             //System.out.println(requestBody);
@@ -53,7 +47,6 @@ public class ScheduleDownloader  {
                 }
                 in.close();
 
-                // print result
                 System.out.println(response.toString());
         }
             conn.disconnect();
